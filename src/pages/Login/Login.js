@@ -1,9 +1,6 @@
 import '../../Styles/Login.css';
 import { useState } from 'react';
 import logo from '../../img/SPORT.png';
-import UserServices from '../../Services/UserServices';
-
-const services = new UserServices;
 
 const LoginRender = () => {
 
@@ -16,6 +13,26 @@ const LoginRender = () => {
 
     const getUsuario = (event) =>{
         setUsuario(event.target.value)
+    }
+
+    const ValidaUsuario = async (usuario, senha) => {
+        const response = await fetch('https://sportapi-kgby.onrender.com/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: usuario,
+                senha: senha
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
     }
 
     return(
@@ -32,7 +49,7 @@ const LoginRender = () => {
                             <input type='password' id='inpSenha' className='inpDadosUsuario' onChange={(event) => getSenha(event)} autoComplete='off' required/>
                             <label>Senha</label>
                         </div>
-                        <button type='button' className='btnEntrar' onClick={() => services.ValidaUsuario(usuario, senha)}>Entrar</button>
+                        <button type='button' className='btnEntrar' onClick={() => ValidaUsuario(usuario, senha)}>Entrar</button>
                         <span>Não tem uma conta? <a href='/Cadastro'>Cadastre-se</a></span>
                     </form>
                 </div>
